@@ -1,0 +1,144 @@
+schema: '2.0'
+stages:
+  data_collection:
+    cmd: python src/data_collection.py --config=params.yaml
+    deps:
+    - path: src/data_collection.py
+      hash: md5
+      md5: 5b37f966444a3bd642f8655da749446f
+      size: 1162
+      isexec: true
+    params:
+      params.yaml:
+        data_path: data
+        dataset_name: CIFAR10
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: e252d2c8ba36d1ab3e21a873ab62daa3.dir
+      size: 356712185
+      nfiles: 9
+  data_processing:
+    cmd: python src/data_processing.py --config=params.yaml
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: e252d2c8ba36d1ab3e21a873ab62daa3.dir
+      size: 356712185
+      nfiles: 9
+    - path: src/data_processing.py
+      hash: md5
+      md5: 02888f18d739e27e11fba3d237c1e9a0
+      size: 2666
+      isexec: true
+    params:
+      params.yaml:
+        batch_size: 64
+        image_size: 32
+        test_split_ratio: 0.2
+        validation_split_ratio: 0.15
+    outs:
+    - path: data/processed/test_loader.pkl
+      hash: md5
+      md5: 26db209a9bcf1780ec5c6475b263c0f9
+      size: 30741995
+      isexec: true
+    - path: data/processed/train_loader.pkl
+      hash: md5
+      md5: db05c49bb02216ef31bea878fbbdfe54
+      size: 153829565
+      isexec: true
+    - path: data/processed/val_loader.pkl
+      hash: md5
+      md5: 5e7aa06ba63111e6f144af85cf998267
+      size: 153724618
+      isexec: true
+  feature_selection:
+    cmd: python src/feature_selection.py --config=params.yaml
+    deps:
+    - path: data/processed/train_loader.pkl
+      hash: md5
+      md5: db05c49bb02216ef31bea878fbbdfe54
+      size: 153829565
+      isexec: true
+    - path: src/feature_selection.py
+      hash: md5
+      md5: e833e72108ad454d32c19e85b47cb1fd
+      size: 1679
+      isexec: true
+    params:
+      params.yaml:
+        project_name: ImageClassificationDVC
+    outs:
+    - path: reports/feature_selection_report.txt
+      hash: md5
+      md5: d91d1b03cb21313367272db5990e05b5
+      size: 592
+      isexec: true
+  model_training:
+    cmd: python src/model_training.py --config=params.yaml
+    deps:
+    - path: data/processed/train_loader.pkl
+      hash: md5
+      md5: db05c49bb02216ef31bea878fbbdfe54
+      size: 153829565
+      isexec: true
+    - path: data/processed/val_loader.pkl
+      hash: md5
+      md5: 5e7aa06ba63111e6f144af85cf998267
+      size: 153724618
+      isexec: true
+    - path: src/model_training.py
+      hash: md5
+      md5: ebb6df3e13a8d53512ef5cf43ebf0e17
+      size: 3899
+      isexec: true
+    params:
+      params.yaml:
+        conv1_out_channels: 32
+        conv2_out_channels: 64
+        dropout_rate: 0.25
+        epochs: 15
+        fc1_out_features: 128
+        learning_rate: 0.001
+        momentum: 0.9
+        num_classes: 10
+        optimizer: Adam
+    outs:
+    - path: models/model.pth
+      hash: md5
+      md5: 638b1d4d19e8c235c5a2533f518660b9
+      size: 2183473
+      isexec: true
+  model_evaluation:
+    cmd: python src/model_evaluation.py --config=params.yaml
+    deps:
+    - path: data/processed/test_loader.pkl
+      hash: md5
+      md5: 26db209a9bcf1780ec5c6475b263c0f9
+      size: 30741995
+      isexec: true
+    - path: models/model.pth
+      hash: md5
+      md5: 638b1d4d19e8c235c5a2533f518660b9
+      size: 2183473
+      isexec: true
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 565ad1593e47b54b4e32d15355683c0f
+      size: 2466
+      isexec: true
+    params:
+      params.yaml:
+        num_classes: 10
+    outs:
+    - path: reports/classification_report.txt
+      hash: md5
+      md5: 3537e449096c805c8d65d6f10339e6c4
+      size: 758
+      isexec: true
+    - path: reports/metrics.json
+      hash: md5
+      md5: e972b566d9fcee081135e184a8d0cb45
+      size: 121
+      isexec: true

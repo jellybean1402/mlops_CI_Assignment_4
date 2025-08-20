@@ -1,0 +1,68 @@
+stages:
+  data_collection:
+    cmd: python src/data_collection.py --config=params.yaml
+    deps:
+      - src/data_collection.py
+    params:
+      - dataset_name
+      - data_path
+    outs:
+      - data/raw # DVC will track this directory
+
+  data_processing:
+    cmd: python src/data_processing.py --config=params.yaml
+    deps:
+      - src/data_processing.py
+      - data/raw
+    params:
+      - image_size
+      - batch_size
+      - test_split_ratio
+      - validation_split_ratio
+    outs:
+      - data/processed/train_loader.pkl
+      - data/processed/val_loader.pkl
+      - data/processed/test_loader.pkl
+
+  feature_selection:
+    cmd: python src/feature_selection.py --config=params.yaml
+    deps:
+      - src/feature_selection.py
+      - data/processed/train_loader.pkl
+    params:
+      - project_name
+    outs:
+      - reports/feature_selection_report.txt
+
+  model_training:
+    cmd: python src/model_training.py --config=params.yaml
+    deps:
+      - src/model_training.py
+      - data/processed/train_loader.pkl
+      - data/processed/val_loader.pkl
+    params:
+      - epochs
+      - learning_rate
+      - optimizer
+      - momentum
+      - dropout_rate
+      - num_classes
+      - conv1_out_channels
+      - conv2_out_channels
+      - fc1_out_features
+    outs:
+      - models/model.pth
+
+  model_evaluation:
+    cmd: python src/model_evaluation.py --config=params.yaml
+    deps:
+      - src/model_evaluation.py
+      - models/model.pth
+      - data/processed/test_loader.pkl
+    params:
+      - num_classes
+    # Add the metrics section below
+    metrics:
+      - reports/metrics.json
+    outs:
+      - reports/classification_report.txt
