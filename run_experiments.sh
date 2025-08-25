@@ -38,7 +38,7 @@ dvc exp run --queue --set-param 'dropout_rate=0.5' --set-param 'epochs=20'
 echo "All 20 experiments have been queued."
 
 # Run all queued experiments. Adjust --jobs to your machine's capability.
-dvc exp run --run-all --jobs 4
+dvc exp run --run-all --jobs 2
 
 echo "Experiment runs complete."
 
