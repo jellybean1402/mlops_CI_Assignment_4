@@ -23,16 +23,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
+        - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1 # Your bucket's region
+
       - name: Set up DVC and Pull Data
-        # This step uses an environment variable for GH actions
-        env:
-          GDRIVE_CREDENTIALS_DATA: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}
-        run: |
-          dvc pull -f
-          
+        run: dvc pull -f
+
       - name: Run Unit Tests
         run: python -m unittest -v test.py
-        
+
       - name: Reproduce DVC Pipeline
         run: dvc repro
