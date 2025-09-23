@@ -33,6 +33,20 @@ jobs:
 
       - name: Set up DVC and Pull Data
         run: dvc pull -f
+      - name: DEBUG - Show .gitattributes content
+        run: |
+          echo "--- Content of .gitattributes ---"
+          cat .gitattributes
+          echo "---------------------------------"
+
+      - name: DEBUG - Show first 5 lines of test.py
+        run: |
+          echo "--- First 5 lines of test.py ---"
+          head -n 5 test.py
+          echo "--------------------------------"
+
+      - name: Run Unit Tests
+        run: python -m unittest -v test.py
 
       - name: Run Unit Tests
         run: python -m unittest -v test.py
