@@ -2,4 +2,4 @@ torch
 torchvision
 PyYAML
 scikit-learn
-dvc
+dvc[s3]
