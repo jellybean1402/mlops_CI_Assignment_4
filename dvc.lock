@@ -97,7 +97,7 @@ stages:
       params.yaml:
         conv1_out_channels: 32
         conv2_out_channels: 64
-        dropout_rate: 0.25
+        dropout_rate: 0.3
         epochs: 15
         fc1_out_features: 128
         learning_rate: 0.001
@@ -107,7 +107,7 @@ stages:
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 638b1d4d19e8c235c5a2533f518660b9
+      md5: 7596615682cf3ea91bbaa4fb0e03db59
       size: 2183473
       isexec: true
   model_evaluation:
@@ -120,7 +120,7 @@ stages:
       isexec: true
     - path: models/model.pth
       hash: md5
-      md5: 638b1d4d19e8c235c5a2533f518660b9
+      md5: 7596615682cf3ea91bbaa4fb0e03db59
       size: 2183473
       isexec: true
     - path: src/model_evaluation.py
@@ -134,11 +134,11 @@ stages:
     outs:
     - path: reports/classification_report.txt
       hash: md5
-      md5: 3537e449096c805c8d65d6f10339e6c4
+      md5: 196438a78586adb81be65db839480027
       size: 758
       isexec: true
     - path: reports/metrics.json
       hash: md5
-      md5: e972b566d9fcee081135e184a8d0cb45
+      md5: cf3a0c08ce8f889cee5a53272c818aac
       size: 121
       isexec: true
