@@ -44,6 +44,11 @@ jobs:
           echo "--- First 5 lines of test.py ---"
           head -n 5 test.py
           echo "--------------------------------"
+      - name: Install Git LFS
+        run: sudo apt-get install git-lfs
+
+      - name: Pull LFS files
+        run: git lfs pull
 
       - name: Run Unit Tests
         run: python -m unittest -v test.py
